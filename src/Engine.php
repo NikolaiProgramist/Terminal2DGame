@@ -44,7 +44,7 @@ while (true) {
     line("円 {$bonusesReceived}");
 
     line(str_repeat('-', $mapColSize));
-    line('⌨ wasd | ⊞ e');
+    line('⌨ wasd | ⊞ e | ? help');
 
     line("\n{$errorAction}");
 
@@ -110,10 +110,41 @@ function actionPlayer(string $action): void
 {
     global $map;
     global $bonusesReceived;
+    global $mapColSize;
 
     $command = explode(' ', $action);
 
     if (count($command) < 2) {
+        if ($action === 'help') {
+            $handle = popen('clear', 'w');
+            pclose($handle);
+
+            line(implode('', file('public/help.txt')));
+
+            line("\n");
+
+            line(str_repeat('-', $mapColSize));
+            line('← Press any key to exit');
+
+            line("\n");
+
+            input();
+
+            $handle = popen('clear', 'w');
+            pclose($handle);
+
+            line(render());
+
+            line("円 {$bonusesReceived}");
+
+            line(str_repeat('-', $mapColSize));
+            line('⌨ wasd | ⊞ e | ? help');
+
+            line("\n");
+
+            actionPlayer(input());
+        }
+
         if ($action === 'd' || $action === 'a' || $action === 'w' || $action === 's') {
             runPlayer($action);
         }
