@@ -1,5 +1,7 @@
 <?php
 
+namespace Experiments\Engine;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use function cli\line;
@@ -11,6 +13,7 @@ use function Experiments\Objects\objectsUse;
 use function Experiments\UsePlayer\useBonus;
 use function Experiments\Game\saveGame;
 use function Experiments\Game\loadGame;
+use function Experiments\Game\pagerFromFile;
 
 $player = '♀';
 $bonusesReceived = '';
@@ -116,33 +119,11 @@ function actionPlayer(string $action): void
 
     if (count($command) < 2) {
         if ($action === 'help') {
-            $handle = popen('clear', 'w');
-            pclose($handle);
+            pagerFromFile('help.txt', $mapColSize, $bonusesReceived);
+        }
 
-            line(implode('', file('public/help.txt')));
-
-            line("\n");
-
-            line(str_repeat('-', $mapColSize));
-            line('← Press any key to exit');
-
-            line("\n");
-
-            input();
-
-            $handle = popen('clear', 'w');
-            pclose($handle);
-
-            line(render());
-
-            line("円 {$bonusesReceived}");
-
-            line(str_repeat('-', $mapColSize));
-            line('⌨ wasd | ⊞ e | ? help');
-
-            line("\n");
-
-            actionPlayer(input());
+        if ($action === 'lor') {
+            pagerFromFile('lor.txt', $mapColSize, $bonusesReceived);
         }
 
         if ($action === 'd' || $action === 'a' || $action === 'w' || $action === 's') {

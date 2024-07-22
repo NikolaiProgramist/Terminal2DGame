@@ -2,9 +2,12 @@
 
 namespace Experiments\Game;
 
-use function cli\line;
-
 require_once __DIR__ . '/../vendor/autoload.php';
+
+use function cli\line;
+use function cli\input;
+use function Experiments\Engine\render;
+use function Experiments\Engine\actionPlayer;
 
 function saveGame(string $saveName, array $map, string $bonusesReceived): void
 {
@@ -43,4 +46,35 @@ function loadGame(string $saveName): array
     $bonusesReceived = file("../saves/{$saveName}/bonusesReceived.txt");
 
     return ['map' => $map, 'bonusesReceived' => $bonusesReceived[0]];
+}
+
+function pagerFromFile(string $fileName, int $mapColSize, string $bonusesReceived): void
+{
+    $handle = popen('clear', 'w');
+    pclose($handle);
+
+    line(implode('', file("public/{$fileName}")));
+
+    line("\n");
+
+    line(str_repeat('-', $mapColSize));
+    line('← Press any key to exit');
+
+    line("\n");
+
+    input();
+
+    $handle = popen('clear', 'w');
+    pclose($handle);
+
+    line(render());
+
+    line("円 {$bonusesReceived}");
+
+    line(str_repeat('-', $mapColSize));
+    line('⌨ wasd | ⊞ e | ? help');
+
+    line("\n");
+
+    actionPlayer(input());
 }
